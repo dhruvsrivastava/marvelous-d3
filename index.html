@@ -19,25 +19,58 @@
     <body>
         <script type="text/javascript">
 
+            var h = 500;
+            var w = 1000;
             var svg = d3.select("body")
-                        .append("svg");
-            svg.attr("height" , 1000)
-               .attr("width" , 1000);
+                        .append("svg")
+                        .attr("height" , h)
+                        .attr("width" , w);
 
             var dataset = []
-            dataset = [5 , 10 , 15 , 20 , 25] 
-            svg.selectAll("div")
+            var lendata = 30
+            for(var i = 0;i < lendata;i++)
+                dataset.push(5 + Math.floor(Math.random() * 95))
+            var maxval = 0;
+            for (var i = 0; i < dataset.length; i++) {
+                if (dataset[i] > maxval)
+                    maxval = dataset[i];
+            }
+
+            svg.selectAll("rect")
             .data(dataset)
             .enter()
             .append("rect")
-            .attr("y" , 0)
-            .attr("x" ,  function(d , i) {
-                return i * 21;
+            .attr("y" , function(d) {
+                return h - (d / maxval) * h;
             })
-            .attr("width", 20)
+            .attr("x" ,  function(d , i) {
+                return i * (w / dataset.length);
+            })
+            .attr("width", (w / dataset.length) - 1)
             .attr("height", function(d) {
-                    return d * 5;
+                    return (d / maxval) * h;
+            })
+            .attr("fill", function(d) {
+                return "rgb(0, 0, " + (d * 10) + ")";
             });
+
+
+            svg.selectAll("text")
+               .data(dataset)
+               .enter()
+               .append("text")
+               .text(function(d) {
+                    return d;
+               })
+               .attr("x" , function(d , i) {
+                    return i * (w / dataset.length) + (w / dataset.length - 1) / 2;
+               })
+               .attr("y" , function(d) {
+                    return (h - (d / maxval) * h) + ((d / maxval) * h) / 2 ;
+               })
+               .attr("text-anchor" , "middle")
+               .attr("fill" , "white");
+
 
             // var circles = svg.selectAll("circle")
             //                  .data(dataset)
